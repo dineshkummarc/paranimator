@@ -9,7 +9,8 @@ and make compativility for smart devices.
 
 Demo Page
 -----
-* http://www.norikiru.com/info/stories/paranimator/
+* http://www.norikiru.com/info/stories/paranimator/        (paginate mode)
+* http://www.norikiru.com/info/stories/paranimator/#nounit (not paginate mode)
 
 Key Futures
 -----
