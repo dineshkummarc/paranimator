@@ -1,4 +1,4 @@
-paranimator v0.1.0
+paranimator v0.1.0 beta
 =====
 
 **parallax animation** JavaScript library
@@ -11,7 +11,7 @@ Demo Page
 -----
 * http://www.norikiru.com/info/stories/paranimator/
 
-Key futures
+Key Futures
 -----
 * Animate with mouse scrolling.
 * Pagination (unit mode)
@@ -28,7 +28,7 @@ Dependencies
 
 Browser compatibility (tested)
 -----
-* Internet Explorer > 8
+* Internet Explorer >=8
 * Google Chrome
 * Apple Safari
 * Mozilla Firefox

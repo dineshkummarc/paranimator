@@ -1,3 +1,9 @@
+/*! Paranimator.js - v0.1.0 - 2013-07-18
+ * https://github.com/YosukeZusa/paranimator
+ *
+ * Copyright (c) 2013 Yosuke Zusa;
+ * Licensed under the MIT license */
+
 (function($){
     
     /**
