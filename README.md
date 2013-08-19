@@ -32,3 +32,35 @@ Browser compatibility (tested)
 * Google Chrome
 * Apple Safari
 * Mozilla Firefox
+
+Syntax
+-----
+HTML
+```html
+<div class="title" >WHAT IS "NORIKIRU"?</div>
+```
+
+JavaScript
+```js
+// Set Target Element
+$.AswParanimator.init( "body" );
+
+// Define Animation
+var story = [{
+           name  : "1-msg",
+           block : 'div#page1 div.title',
+           s     : 0,
+           e     : 4,
+           css   : { zIndex:2000 },
+           start : { top : 240, left:45 , rotate : 0  },
+           end   : { top : 160, left:120, rotate : 2 },
+           fadeOut : 0.9,
+         }];
+
+// Start Animation
+$.AswParanimator.set({
+    options : { speed : 50 },
+    story   : story
+  });
+```
+
