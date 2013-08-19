@@ -3,7 +3,7 @@ paranimator v0.1.0 beta
 
 **parallax animation** JavaScript library
 
-Now programmer friendly. JavaScript skills needed.
+Now programmer friendly(so easy). JavaScript skills needed(so easy).
 but in the future, I will create Designer friendly wrapper module.
 and make compativility for smart devices.
 
