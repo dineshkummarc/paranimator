@@ -3,9 +3,15 @@ paranimator v0.1.0 beta
 
 **parallax animation** JavaScript library
 
-Now programmer friendly(so easy). JavaScript skills needed(so easy).
-but in the future, I will create Designer friendly wrapper module.
-and make compativility for smart devices.
+Paranimator provide easy procedures for parallax animation.
+future, I'll implement HTML level interface for this module(DataAttribute).
+And make compativility for smart devices.
+
+Now, Paranimator is beta version.
+When I solve these problems, then register release version.
+* improve parameter name to proper. 
+* to more smoothly paging animation.
+* improve performance of background animation.
 
 Demo Page
 -----
