@@ -368,10 +368,10 @@
               if( def.img != undefined ){
                 $bg = $('<img src="'+def.img+'"></img>');
                 $bg.css({
-                  height : ( def.length || window.screen.height )+'px',
+                  height   : ( def.length || window.screen.height )+'px',
                   position : "absolute",
-                  top    : 0,
-                  left   : ((1920*window.screen.height/1200) - $("body").width())/-2 
+                  top      : 0,
+                  left     : ((1920*window.screen.height/1200) - $("body").width())/-2 
                 });
               }
              
@@ -380,7 +380,7 @@
                 for( var bgi in def.bg ){
                   if( typeof def.bg[bgi] != "string" ) continue;
                   var $bgs = $('<div></div>');
-                  (function(bgi, $_bgs){
+                  (function(i, bgi, $_bgs){
                     var _h = $(window).height();
                     var bgposition = 0;
                     $_bgs.css({
@@ -393,12 +393,18 @@
                     $bg.append( $bgs );
                     if( def.auto[bgi] == true ){
                       setInterval(function(){
+                        if( i != x.defBG.curr ){
+                          return;
+                        }
                         $_bgs.css({
                           "background-position" :  "0px "+ (bgposition+=(def.speed[bgi]*-1))+"px"
                         });
                       }, 60 );
                     } else {
-                      $box.mousewheel(function(event, delta){
+                      $(document).bind('paranimator.bgscroll', function(event, d){
+                        var delta = d.delta;
+//                      });
+//                      $box.mousewheel(function(event, delta){
                         if( def.infinite[bgi] == false && bgposition >= 0 && delta > 0 ){
                           bgposition = 0;
                           delta = 0;
@@ -412,7 +418,7 @@
                         });
                       });
                     }
-                  }(bgi, $bgs));
+                  }(i, bgi, $bgs));
                 }
               }
               
@@ -491,6 +497,7 @@
                 speed = 8.8;
               }
               
+              $(document).trigger('paranimator.bgscroll',{ delta:parseInt( e.gesture.deltaY - prevDelta ) / speed } );
               x.animate( parseInt( e.gesture.deltaY - prevDelta )*x.pw / speed );
 //              $("div#_main").append( e.gesture.deltaTime + "<br />" );
 //              $("div#_main").append( minDeltaT + "<br />" );
@@ -512,6 +519,7 @@
             if (navigator.appVersion.indexOf("Win")!=-1){
               delta *= 10;
             }
+            $(document).trigger('paranimator.bgscroll',{ delta:delta } );
             x.animate( delta*x.pw );
             return false;
           });
@@ -526,13 +534,8 @@
         
         if( x.o.unit != undefined ){
 
-          
           x.fnAnimateBG = ( function( p, delta, xp ){
             
-//            console.log( p*100 );
-//            console.log( $("div#screen"+x.defBG.curr+ " div.box" ).scrollTop() );
-            
-//            $("div#screen"+x.defBG.curr+ " div.box img" ).css({top: p*-100});
             if( typeof x.defBG.currDef == "object" ){
               if( x.defBG.currDef.bg != undefined ){
                 
@@ -550,7 +553,7 @@
                     var c=( x.o.duration / (x.o.frequency*4) );
                     x.defBG.currDef = x.defBG[p];
                     $("div.background").animate({
-                      scrollTop : (++x.defBG.curr)*$("body").height()
+                      scrollTop : (++x.defBG.curr)*$("div#screen"+x.defBG.curr).height()
                     }, x.o.duration/5 );
                   }(Math.floor(p)));
                 }
@@ -563,7 +566,7 @@
                     var s=( x.o.duration / (x.o.frequency*4) );
                     var c=( x.o.duration / (x.o.frequency*4) );
                     $("div.background").animate({
-                      scrollTop : (--x.defBG.curr)*$("body").height()
+                      scrollTop : (--x.defBG.curr)*$("div#screen"+x.defBG.curr).height()
                     }, x.o.duration/5 );
                     x.defBG.currDef = x.defBG[p];
                   }(Math.floor(p)));
@@ -624,15 +627,16 @@
           });
         } else { // nounit
           x.fnAnimateBG = ( function( p, delta, xp ){
-//            console.log( x.defBG.curr );
             if( p > 0.5 && typeof x.defBG[Math.round(p)] == "object" ){
               var f = p%1;
               if( f > 1-0.2 ){ // 進む　
-                $("div.background").scrollTop( $("body").height() * ( x.defBGSeq[Math.round(p)] - (( 1 - f ) * 5) ) );
+                $("div.background").scrollTop( $("div#screen"+x.defBG.curr).height() * ( x.defBGSeq[Math.round(p)] - (( 1 - f ) * 5) ) );
               } else if( f < 0.5 ){
-                $("div.background").scrollTop( $("body").height() * ( x.defBGSeq[Math.round(p)] ) );
+                $("div.background").scrollTop( $("div#screen"+x.defBG.curr).height() * ( x.defBGSeq[Math.round(p)] ) );
+                x.defBG.curr = x.defBGSeq[Math.round(p)];
               } else if( f > 0.5 ){
-                $("div.background").scrollTop( $("body").height() * ( x.defBGSeq[Math.round(p)]-1 ) );
+                $("div.background").scrollTop( $("div#screen"+x.defBG.curr).height() * ( x.defBGSeq[Math.round(p)]-1 ) );
+                x.defBG.curr = x.defBGSeq[Math.round(p)]-1;
               }
             }
           });
