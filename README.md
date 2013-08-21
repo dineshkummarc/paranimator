@@ -5,18 +5,12 @@ paranimator v0.1.0 beta
 
 Paranimator provide easy procedures for parallax animation.
 future, I'll implement HTML level interface for this module(DataAttribute).
-And make compativility for smart devices.
-
-Now, Paranimator is beta version.
-When I solve these problems, then register release version.
-* improve parameter name to proper. 
-* to more smoothly paging animation.
-* improve performance of background animation.
 
 Demo Page
 -----
 * http://www.norikiru.com/info/stories/paranimator/        (paginate mode)
 * http://www.norikiru.com/info/stories/paranimator/#nounit (not paginate mode)
+* http://www.norikiru.com/paranimator/demo/index.html      (for smartphone compatibility)
 
 Key Futures
 -----
