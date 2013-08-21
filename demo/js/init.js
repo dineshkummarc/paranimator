@@ -1,12 +1,14 @@
 $(document).ready(function(){
   
-  $(window).scrollTop(1);
+  var ua = navigator.userAgent;
   
   $("div.background").css({
     width : "100%",
-    height : $("body").height(),
+    height : ua.search(/Android/) != -1 ? $(document).height() : $("body").height(),
     overflow : "hidden"
   });
+  
+  $(window).scrollTop(1);
   
   var bg = [
             { s:0 , color  : "#F7BBFC" },
