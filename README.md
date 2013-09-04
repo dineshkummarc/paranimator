@@ -1,4 +1,4 @@
-paranimator v0.1.0
+paranimator v0.1.1
 =====
 
 **parallax animation** JavaScript library
