@@ -50,7 +50,7 @@
           curr : 0,
           next : 0,
           first: 0,
-          last : 0,
+          last : 0
         },
         definstanceS : {},
         definstanceE : {},
@@ -149,6 +149,13 @@
           }
           var initElem = function( k, $elem, $def, direction ){
             
+            $def.end   = $def.end   || {};
+            $def.start = $def.start || {};
+            
+            if( $def.addClass != undefined ){
+              $elem.addClass( $def.addClass );
+            }
+            
             $elem.css( $.extend( { position : "absolute", "zIndex" : 1000 }, direction=="next" ? $def.start: $.extend({}, $def.start, $def.end), $def.css ) );
             $elem.hide();
             $elem.nounit = $def.nounit;
@@ -179,6 +186,10 @@
               return;
             }
             
+            if( $def.fadeIn > 0 ){
+              $elem.css({opacity:0});
+            }
+            
             var inOsAnim = false;
             if( x.o.unit != undefined && typeof $def.osanim == "function" && direction=="next" ){
               inOsAnim = true;
@@ -192,10 +203,19 @@
                 },0);
             } else {
               if( $def.fadeIn > 1 ){
+                $elem.css({opacity:1});
                 $elem.fadeIn( $def.fadeIn );
               }else {
                 $elem.show();
               }
+            }
+            
+            if( $def.start.top == undefined  && $def.start.bottom == undefined ){
+              $def.start.top = String($elem.offset().top);
+            }
+
+            if( $def.start.left == undefined && $def.start.right == undefined ){
+              $def.start.left = String($elem.offset().left);
             }
             
             $elem.fnAswParanimator = function( p, anim, direction ){
@@ -208,6 +228,10 @@
                 if( typeof $def.end[key] !== "function" ){
                   if( typeof $def.end[key] == "string" && $def.end[key].lastIndexOf("#",0) === 0 ){
                     props[key] = $.Color($def.start[key]).transition( $.Color($def.end[key]), _progress ).toHexString();
+                  } else if( typeof $def.end[key] == "string" && $def.end[key].slice(-1) == "%" ){
+                    var _sprop = Number($def.start[key].replace("%",""));
+                    var _eprop = Number($def.end[key].replace("%",""));
+                    props[key] = ( _sprop + ( ( _eprop - _sprop ) * _progress ) ) + "%";
                   } else {
                     props[key] = $def.start[key] + ( ( $def.end[key] - $def.start[key] ) * _progress );
                   }
@@ -218,7 +242,10 @@
               } else if( $def.fadeOut != undefined && $def.fadeOut < 1 && $def.fadeOut < progress){
                 props.opacity = ( 1 - ( progress - $def.fadeOut ) * 12 );
               } else {
-//                props.opacity = props.opacity || 1;
+                if( $def.fadeIn > 1 ){
+                } else {
+                  props.opacity = props.opacity || 1;
+                }
               }
               var fnDelete = function(){
                 if( $def.fadeOut > 1 ){
@@ -325,7 +352,12 @@
             
             if( s.story[i].block!=undefined && s.story[i].block.lastIndexOf("<",0) !== 0 ){
               var p = $(s.story[i].block);
-              p.hide();
+              if( p.css("top") != "auto"){
+                p.css("top", p.offset().top);
+              } 
+              if( p.css("left") != "auto"){
+                p.css("left", p.offset().left);
+              }
               s.story[i].block = p[0].outerHTML;
               p.remove();
             }
@@ -368,7 +400,7 @@
               if( def.img != undefined ){
                 $bg = $('<img src="'+def.img+'"></img>');
                 $bg.css({
-                  height   : ( def.length || window.screen.height )+'px',
+                  height   : $(window).height(),
                   position : "absolute",
                   top      : 0,
                   left     : ((1920*window.screen.height/1200) - $("body").width())/-2 
@@ -381,14 +413,14 @@
                   if( typeof def.bg[bgi] != "string" ) continue;
                   var $bgs = $('<div></div>');
                   (function(i, bgi, $_bgs){
-                    var _h = $(window).height();
+                    var _h = Number( $(window).height() );
                     var bgposition = 0;
                     $_bgs.css({
                       "background-image" : 'url('+def.bg[bgi]+')',
                       width  : window.screen.width+'px',
                       height : ( def.length || window.screen.height )+'px',
                       position : "absolute",
-                      top    : 0,
+                      top    : 0
                     });
                     $bg.append( $bgs );
                     if( def.auto[bgi] == true ){
@@ -402,9 +434,13 @@
                       }, 60 );
                     } else {
                       $(document).bind('paranimator.bgscroll', function(event, d){
+                        if( i != x.defBG.curr ){
+                          return;
+                        }
                         var delta = d.delta;
+                        delta = Math.min( 1.5, delta );
+                        delta = Math.max( -1.5, delta );
 //                      });
-//                      $box.mousewheel(function(event, delta){
                         if( def.infinite[bgi] == false && bgposition >= 0 && delta > 0 ){
                           bgposition = 0;
                           delta = 0;
@@ -470,6 +506,7 @@
     // jQueryに独自の関数を追加する
     define_your_method_here({
       init : function( selector ){
+        $(".prr-hide").hide();
         x.target = selector;
         $(x.target+" div.paranimator div").hide();
         $(x.target).css({
@@ -487,11 +524,9 @@
           var speed = 8.8;
           $(x.target).height( $(document).height() );
           $(x.target).hammer().on('drag', function( e ) {
-//          Hammer(window).on('drag', function( e, data ) {
               event.preventDefault();                     // ページが動くのを止める
               
               if( minDeltaT < 100 && minDeltaT > 45 ){
-//                $("div#_main").append( "o" );
                 speed = 3.7;
               } else {
                 speed = 8.8;
@@ -514,13 +549,20 @@
           });
           
         } else {
+          var animating = false;
           jQuery( selector ).mousewheel(function(event, delta) {
             x.wheeldelta = Math.abs( delta );
             if (navigator.appVersion.indexOf("Win")!=-1){
-              delta *= 10;
+              if( animating == true ){
+              } else {
+                for( var kk=10; kk<=85; kk+=15 ){
+                  setTimeout( function(){x.animate( delta*x.pw*3 );}, kk );
+                }
+              }
+            } else {
+              x.animate( delta*x.pw );
             }
             $(document).trigger('paranimator.bgscroll',{ delta:delta } );
-            x.animate( delta*x.pw );
             return false;
           });
         }
